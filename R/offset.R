@@ -12,7 +12,7 @@
 #' @return data.frame with corrected X and Y values
 #' @export
 
-VM.mean.offset <- function(data, X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", Tree_ID = "ID"){
+VM.mean.offset <- function(data, X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", Tree_ID = "TreeID"){
     
     # adjusting colnames based on provided information
     colnames(data)[which(colnames(data) == Base_ID)] <- "Base"

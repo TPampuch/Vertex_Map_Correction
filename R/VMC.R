@@ -18,7 +18,7 @@
 #' @return data.frame with corrected X and Y values
 #' @export
 
-VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", Tree_ID = "ID", limit = 10, ref_num = 2, plot = TRUE){
+VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", Tree_ID = "TreeID", limit = 10, ref_num = 2, plot = TRUE){
   
   ####
   # the data should be loaded as a data.frame with the typical Vertex Laser-Geo information
