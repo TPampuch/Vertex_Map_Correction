@@ -34,10 +34,10 @@ VMC <- function(data, Tree_DBH, Base_ID, vertex_ID = "ID", Tree_ID, limit = 10, 
   colnames(data)[which(colnames(data) == Tree_ID)] <- "TreeID"
   
   # create "before" plot of initial data
-  p1 = ggplot2::ggplot(data, aes(x = Y.m., y = X.m.))+
-    ggplot2::geom_point(aes(color = as.factor(Base), size = TreeDBH))+
+  p1 = ggplot2::ggplot(data, ggplot2::aes(x = Y.m., y = X.m.))+
+    ggplot2::geom_point(ggplot2::aes(color = as.factor(Base), size = TreeDBH))+
     ggplot2::theme_light()+
-    ggrepel::geom_text_repel(aes(label=TreeID), cex = 2)+
+    ggrepel::geom_text_repel(ggplot2::aes(label=TreeID), cex = 2)+
     ggplot2::labs(x = "X", y = "Y", title = "Before")
   
   overlaps <- names(which(table(data$TreeID) > 1))
@@ -167,10 +167,10 @@ VMC <- function(data, Tree_DBH, Base_ID, vertex_ID = "ID", Tree_ID, limit = 10, 
   }
   
   # create "after" plot of adjusted data
-  p2 = ggplot2::ggplot(data, aes(x = Y.m., y = X.m.))+
-    ggplot2::geom_point(aes(color = as.factor(Base), size = TreeDBH))+
+  p2 = ggplot2::ggplot(data, ggplot2::aes(x = Y.m., y = X.m.))+
+    ggplot2::geom_point(ggplot2::aes(color = as.factor(Base), size = TreeDBH))+
     ggplot2::theme_light()+
-    ggrepel::geom_text_repel(aes(label=TreeID), cex = 2)+
+    ggrepel::geom_text_repel(ggplot2::aes(label=TreeID), cex = 2)+
     ggplot2::labs(x = "X", y = "Y", title = "After")
   
   return(list(data,  print(gridExtra::grid.arrange(p1, p2, nrow=2)), message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
