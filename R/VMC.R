@@ -7,16 +7,18 @@
 #' different base-pairs only as long as the sum of the squares of all offsets is further reduced.
 #'
 #' @param data data.frame including vertex output
-#' @param TreeDBH name for DBH column
+#' @param TreeDBH name for DBH column (only needed for plotting)
+#' @param X_Col name for X-coordinates column
+#' @param Y_Col name for X-coordinates column
 #' @param Base_ID name for base ID column
-#' @param vertex_ID name for vertex ID column (default = "ID")
 #' @param Tree_ID name for tree ID column
 #' @param limit number of iterations wihout change before loop stops (default = 10)
 #' @param ref_num minimum number of overlapping trees (default = 2)
+#' @param plot logical, if true plots two maps for comparison (requires ggplot2 and ggrepel)
 #' @return data.frame with corrected X and Y values
 #' @export
 
-VMC <- function(data, Tree_DBH, Base_ID, vertex_ID = "ID", Tree_ID, limit = 10, ref_num = 2){
+VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", Tree_ID = "ID", limit = 10, ref_num = 2, plot = TRUE){
   
   ####
   # the data should be loaded as a data.frame with the typical Vertex Laser-Geo information
@@ -28,17 +30,20 @@ VMC <- function(data, Tree_DBH, Base_ID, vertex_ID = "ID", Tree_ID, limit = 10, 
   # - when there is no improvement in the mean square for a given number of times (variable "limit") in a row the loop stops
   
   # adjusting colnames based on provided information
-  colnames(data)[which(colnames(data) == Tree_DBH)] <- "TreeDBH"
+  if(plot == TRUE){colnames(data)[which(colnames(data) == Tree_DBH)] <- "TreeDBH"}
   colnames(data)[which(colnames(data) == Base_ID)] <- "Base"
-  colnames(data)[which(colnames(data) == vertex_ID)] <- "vertexID"
   colnames(data)[which(colnames(data) == Tree_ID)] <- "TreeID"
-  
-  # create "before" plot of initial data
-  p1 = ggplot2::ggplot(data, ggplot2::aes(x = Y.m., y = X.m.))+
-    ggplot2::geom_point(ggplot2::aes(color = as.factor(Base), size = TreeDBH))+
-    ggplot2::theme_light()+
-    ggrepel::geom_text_repel(ggplot2::aes(label=TreeID), cex = 2)+
-    ggplot2::labs(x = "X", y = "Y", title = "Before")
+  colnames(data)[which(colnames(data) == X_col)] <- "X.m."
+  colnames(data)[which(colnames(data) == Y_col)] <- "Y.m."
+
+  if(plot == TRUE){
+    # create "before" plot of initial data
+    p1 = ggplot2::ggplot(data, ggplot2::aes(x = Y.m., y = X.m.))+
+      ggplot2::geom_point(ggplot2::aes(color = as.factor(Base), size = TreeDBH))+
+      ggplot2::theme_light()+
+      ggrepel::geom_text_repel(ggplot2::aes(label=TreeID), cex = 2)+
+      ggplot2::labs(x = "X", y = "Y", title = "Before")
+  }
   
   overlaps <- names(which(table(data$TreeID) > 1))
   Bases <- max(na.omit(data$Base))
@@ -166,12 +171,18 @@ VMC <- function(data, Tree_DBH, Base_ID, vertex_ID = "ID", Tree_ID, limit = 10, 
     if(death >= limit) break # if the counter hits the limit the repeat loop stops 
   }
   
-  # create "after" plot of adjusted data
-  p2 = ggplot2::ggplot(data, ggplot2::aes(x = Y.m., y = X.m.))+
-    ggplot2::geom_point(ggplot2::aes(color = as.factor(Base), size = TreeDBH))+
-    ggplot2::theme_light()+
-    ggrepel::geom_text_repel(ggplot2::aes(label=TreeID), cex = 2)+
-    ggplot2::labs(x = "X", y = "Y", title = "After")
+  if(plot == TRUE){
+    # create "after" plot of adjusted data
+    p2 = ggplot2::ggplot(data, ggplot2::aes(x = Y.m., y = X.m.))+
+      ggplot2::geom_point(ggplot2::aes(color = as.factor(Base), size = TreeDBH))+
+      ggplot2::theme_light()+
+      ggrepel::geom_text_repel(ggplot2::aes(label=TreeID), cex = 2)+
+      ggplot2::labs(x = "X", y = "Y", title = "After")
+  }
   
-  return(list(data,  print(gridExtra::grid.arrange(p1, p2, nrow=2)), message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
+  if(plot == TRUE){
+    return(list(data,  print(gridExtra::grid.arrange(p1, p2, nrow=2)), message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
+  }else{
+    return(list(data, message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
+  }
 }

@@ -6,12 +6,14 @@
 \usage{
 VMC(
   data,
-  Tree_DBH,
-  Base_ID,
-  vertex_ID = "ID",
-  Tree_ID,
+  Tree_DBH = "DBH",
+  X_col = "X.m.",
+  Y_col = "Y.m.",
+  Base_ID = "Base",
+  Tree_ID = "ID",
   limit = 10,
-  ref_num = 2
+  ref_num = 2,
+  plot = TRUE
 )
 }
 \arguments{
@@ -19,15 +21,19 @@ VMC(
 
 \item{Base_ID}{name for base ID column}
 
-\item{vertex_ID}{name for vertex ID column (default = "ID")}
-
 \item{Tree_ID}{name for tree ID column}
 
 \item{limit}{number of iterations wihout change before loop stops (default = 10)}
 
 \item{ref_num}{minimum number of overlapping trees (default = 2)}
 
-\item{TreeDBH}{name for DBH column}
+\item{plot}{logical, if true plots two maps for comparison (requires ggplot2 and ggrepel)}
+
+\item{TreeDBH}{name for DBH column (only needed for plotting)}
+
+\item{X_Col}{name for X-coordinates column}
+
+\item{Y_Col}{name for X-coordinates column}
 }
 \value{
 data.frame with corrected X and Y values
