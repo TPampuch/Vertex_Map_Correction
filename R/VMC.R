@@ -26,6 +26,7 @@ VMC <- function(data, Tree_DBH, Base_ID, vertex_ID = "ID", Tree_ID, limit = 10, 
   # - make sure to remove the "settings" rows from the original vertex csv table
   # - Tree IDs should be unique (except for reference points of course)
   # - when there is no improvement in the mean square for a given number of times (variable "limit") in a row the loop stops
+  # - TEST TEST TEST 123
   
   # adjusting colnames based on provided information
   colnames(data)[which(colnames(data) == Tree_DBH)] <- "TreeDBH"
