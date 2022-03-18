@@ -1,0 +1,16 @@
+Package: VMC
+Title: Vertex Map Correction
+Version: 0.5
+Authors@R: 
+    person("Timo", "Pampuch", , "pampuchs_timo@gmx.de", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Correcting offset in forest inventory maps created with Vertex Laser Geo 360.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports:
+		ggplot2,
+		gridExtra,
+		ggrepel
