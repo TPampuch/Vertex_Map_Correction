@@ -6,10 +6,10 @@
 #' measured from one base towards the other base. Since the data cannot fit perfectly it repeats the step with
 #' different base-pairs only as long as the sum of the squares of all offsets is further reduced.
 #'
-#' @param data data.frame including vertex output
+#' @param data data.frame including coordinates, Tree-IDs and "Base-number"
 #' @param TreeDBH name for DBH column (only needed for plotting)
 #' @param X_Col name for X-coordinates column
-#' @param Y_Col name for X-coordinates column
+#' @param Y_Col name for Y-coordinates column
 #' @param Base_ID name for base ID column
 #' @param Tree_ID name for tree ID column
 #' @param limit number of iterations wihout change before loop stops (default = 10)
@@ -160,8 +160,9 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Base_ID 
       lms
       
       k = k + 1
-      if(round(lms[k-2,1],4) <= round(lms[k-1,1],4)){ # compare current ms with the previous iteration, if the current is similar to the one before or even higher it didn't help
-        data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]-msdataC$X # redo what have been done, since the change did not improve anything
+      if(round(lms[k-2,1],4) <= round(lms[k-1,1],4)){ # compare current ms with the previous iteration, 
+        # if the current is similar to the one before or even higher it didn't help
+        data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]-msdataC$X # undo what have been done, since the change did not improve anything
         data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]-msdataC$Y
         k = k - 1
         death = death + 1 # add one to the counter
