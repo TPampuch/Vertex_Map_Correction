@@ -11,7 +11,7 @@
 #' @return data.frame
 #' @export
 
-merge.refs <- function(data, X_col = "X.m.", Y_col = "Y.m.", Tree_ID = "TreeID"){
+ref_merge <- function(data, X_col = "X.m.", Y_col = "Y.m.", Tree_ID = "TreeID"){
   colnames(data)[which(colnames(data) == X_col)] <- "X.m."
   colnames(data)[which(colnames(data) == Y_col)] <- "Y.m."
   colnames(data)[which(colnames(data) == Tree_ID)] <- "TreeID"
