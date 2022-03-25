@@ -181,6 +181,12 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Base_ID 
       ggplot2::labs(x = "X", y = "Y", title = "After")
   }
   
+  if(plot == TRUE){colnames(data)[which(colnames(data) == "TreeDBH")] <- Tree_DBH}
+  colnames(data)[which(colnames(data) == "Base")] <- Base_ID
+  colnames(data)[which(colnames(data) == "TreeID")] <- Tree_ID 
+  colnames(data)[which(colnames(data) == "X.m.")] <- X_col
+  colnames(data)[which(colnames(data) == "Y.m.")] <- Y_col
+  
   if(plot == TRUE){
     return(list(data,  print(gridExtra::grid.arrange(p1, p2, nrow=2)), message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
   }else{
