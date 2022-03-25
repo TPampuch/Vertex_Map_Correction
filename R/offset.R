@@ -9,7 +9,7 @@
 #' @param Base_ID name for base ID column
 #' @param Tree_ID name for tree ID column
 #' 
-#' @return data.frame with corrected X and Y values
+#' @return data.frame
 #' @export
 
 VM.mean.offset <- function(data, X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", Tree_ID = "TreeID"){

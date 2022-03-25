@@ -9,7 +9,7 @@ VM.mean.offset(
   X_col = "X.m.",
   Y_col = "Y.m.",
   Base_ID = "Base",
-  Tree_ID = "ID"
+  Tree_ID = "TreeID"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ VM.mean.offset(
 \item{Y_Col}{name for X-coordinates column}
 }
 \value{
-data.frame with corrected X and Y values
+data.frame
 }
 \description{
 This function calculates the mean offset between pairs of bases

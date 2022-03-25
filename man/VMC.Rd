@@ -10,14 +10,14 @@ VMC(
   X_col = "X.m.",
   Y_col = "Y.m.",
   Base_ID = "Base",
-  Tree_ID = "ID",
+  Tree_ID = "TreeID",
   limit = 10,
   ref_num = 2,
   plot = TRUE
 )
 }
 \arguments{
-\item{data}{data.frame including vertex output}
+\item{data}{data.frame including coordinates, Tree-IDs and "Base-number"}
 
 \item{Base_ID}{name for base ID column}
 
@@ -33,7 +33,7 @@ VMC(
 
 \item{X_Col}{name for X-coordinates column}
 
-\item{Y_Col}{name for X-coordinates column}
+\item{Y_Col}{name for Y-coordinates column}
 }
 \value{
 data.frame with corrected X and Y values
