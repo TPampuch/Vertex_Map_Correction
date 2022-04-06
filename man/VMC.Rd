@@ -9,11 +9,13 @@ VMC(
   Tree_DBH = "DBH",
   X_col = "X.m.",
   Y_col = "Y.m.",
+  Alt_col = "ALTITUDE",
   Base_ID = "Base",
   Tree_ID = "TreeID",
   limit = 10,
   ref_num = 2,
-  plot = TRUE
+  plot = TRUE,
+  z_corr = FALSE
 )
 }
 \arguments{
@@ -23,17 +25,21 @@ VMC(
 
 \item{Tree_ID}{name for tree ID column}
 
-\item{limit}{number of iterations wihout change before loop stops (default = 10)}
+\item{limit}{number of iterations without change before loop stops (default = 10)}
 
 \item{ref_num}{minimum number of overlapping trees (default = 2)}
 
 \item{plot}{logical, if true plots two maps for comparison (requires ggplot2 and ggrepel)}
+
+\item{z_corr}{logical, if true correction of z-column will be included}
 
 \item{TreeDBH}{name for DBH column (only needed for plotting)}
 
 \item{X_Col}{name for X-coordinates column}
 
 \item{Y_Col}{name for Y-coordinates column}
+
+\item{Alt_Col}{name for Altitude column (only needed for Z correction)}
 }
 \value{
 data.frame with corrected X and Y values
@@ -43,5 +49,5 @@ This function tries to minimize the offset introduced when mapping an area using
 The function checks for reference trees that where measured from several positions (bases) and simply
 loops through base-pairs with overlapping information. The offset is reduced by moving all data-points
 measured from one base towards the other base. Since the data cannot fit perfectly it repeats the step with
-different base-pairs only as long as the sum of the squares of all offsets is further reduced.
+different base-pairs as long as the sum of the squares of all offsets is further reduced.
 }
