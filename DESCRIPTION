@@ -1,6 +1,6 @@
 Package: VMC
 Title: Vertex Map Correction
-Version: 0.6
+Version: 0.7.1
 Authors@R: 
     person("Timo", "Pampuch", , "pampuchs_timo@gmx.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
