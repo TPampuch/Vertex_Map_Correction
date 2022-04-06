@@ -9,7 +9,9 @@ calc_offset(
   X_col = "X.m.",
   Y_col = "Y.m.",
   Base_ID = "Base",
-  Tree_ID = "TreeID"
+  Tree_ID = "TreeID",
+  Alt_col = "ALTITUDE",
+  z_corr = FALSE
 )
 }
 \arguments{
@@ -19,9 +21,13 @@ calc_offset(
 
 \item{Tree_ID}{name for tree ID column}
 
+\item{z_corr}{logical, if true correction of z-column will be included}
+
 \item{X_Col}{name for X-coordinates column}
 
 \item{Y_Col}{name for X-coordinates column}
+
+\item{Alt_Col}{name for Altitude column (only needed for Z correction)}
 }
 \value{
 data.frame

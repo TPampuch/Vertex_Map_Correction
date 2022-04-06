@@ -38,7 +38,7 @@ calc_offset <- function(data, X_col = "X.m.", Y_col = "Y.m.", Base_ID = "Base", 
     for(b in 1:Bases){ # loop 2 of all Bases
       if(b == a) next # next iteration if a and b are the same Base
       ctrl = paste(sort(c(a,b))[1], "&", sort(c(a,b))[2]) # control line to avoid doubling base-pairs
-      if(ctrl %in% means$Bases) next # next iteration if the combination was already calculated
+      if(ctrl %in% means$Base_combo)next # next iteration if the combination was already calculated
       
       adata <- data[which(data$TreeID %in% overlaps & data$Base == a),]
       bdata <- data[which(data$TreeID %in% overlaps & data$Base == b),]
