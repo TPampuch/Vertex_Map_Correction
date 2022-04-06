@@ -17,7 +17,7 @@ ref_merge <- function(data, X_col = "X.m.", Y_col = "Y.m.", Tree_ID = "TreeID"){
   colnames(data)[which(colnames(data) == Tree_ID)] <- "TreeID"
   
   overlaps <- names(which(table(data$TreeID) > 1))
-  overlaps
+  #overlaps
   
   for(i in 1:length(overlaps)){
     means = colMeans(data[which(data$TreeID == overlaps[i]),c("X.m.","Y.m.")])
