@@ -111,7 +111,7 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
     lms$sum[k] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2) 
   }
   lms$iteration[k] = k
-  lms$sum[1]
+  #lms$sum[1]
   k = k + 1
   
   combos = means$Base_combo # now select possible combos and loop through
@@ -180,7 +180,7 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
         if(nrow(adata) < 1 | nrow(bdata) < 1) next # skip to next loop iteration if there is no row in a or b
         
         Base12 <- rbind(adata,bdata)
-        Base12
+        #Base12
         
         names = unique(Base12$TreeID)
         if(length(names) < ref_num) next
@@ -209,7 +209,7 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
         }
         i = i + 1
       }
-      means
+      #means
       
       if(z_corr == TRUE){
         lms[k,1] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2 + as.numeric(means$Z)^2)
