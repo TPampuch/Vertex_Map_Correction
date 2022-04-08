@@ -14,7 +14,7 @@ VMC(
   Tree_ID = "TreeID",
   limit = 10,
   ref_num = 2,
-  plot = TRUE,
+  plot = FALSE,
   z_corr = FALSE
 )
 }

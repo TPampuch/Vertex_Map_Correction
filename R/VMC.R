@@ -20,7 +20,7 @@
 #' @return data.frame with corrected X and Y values
 #' @export
 
-VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col = "ALTITUDE", Base_ID = "Base", Tree_ID = "TreeID", limit = 10, ref_num = 2, plot = TRUE, z_corr = FALSE){
+VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col = "ALTITUDE", Base_ID = "Base", Tree_ID = "TreeID", limit = 10, ref_num = 2, plot = FALSE, z_corr = FALSE){
   
   ####
   # the data should be loaded as a data.frame with the typical Vertex Laser-Geo information
@@ -55,11 +55,8 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
   # calculate initial mean square
   ctrl = NA
   i = 1
-  if(z_corr == TRUE){
-    means = data.frame(X = NA, Y = NA, Z = NA, Base_combo = NA)
-  }else{
-    means = data.frame(X = NA, Y = NA, Base_combo = NA)
-  }
+  means = data.frame(X = NA, Y = NA, Base_combo = NA)
+
   for(a in 1:Bases){ # loop 1 of all Bases
     for(b in 1:Bases){ # loop 2 of all Bases
       if(b == a) next # next iteration if a and b are the same Base
@@ -78,38 +75,19 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
       
       names = unique(Base12$TreeID)
       if(length(names) < ref_num) next # skip to next loop iteration if the number of "reference tree" is below the provided amount (should be at least (default) 2)
-      if(z_corr == TRUE){
-        ms = data.frame(X = NA, Y = NA, Z = NA) 
-      }else{
-        ms = data.frame(X = NA, Y = NA)
-      }
+      ms = data.frame(X = NA, Y = NA)
       for(c in 1:length(names)){
-        if(z_corr == TRUE){
-          Basems = Base12[which(Base12$TreeID == names[c]),]
-          ms[c,"X"] = (Basems$X.m.[1] - Basems$X.m.[2])
-          ms[c,"Y"] = (Basems$Y.m.[1] - Basems$Y.m.[2])
-          ms[c,"Z"] = (Basems$ALTITUDE[1] - Basems$ALTITUDE[2])
-        }else{
-          Basems = Base12[which(Base12$TreeID == names[c]),]
-          ms[c,"X"] = (Basems$X.m.[1] - Basems$X.m.[2])
-          ms[c,"Y"] = (Basems$Y.m.[1] - Basems$Y.m.[2])
-        }
+        Basems = Base12[which(Base12$TreeID == names[c]),]
+        ms[c,"X"] = (Basems$X.m.[1] - Basems$X.m.[2])
+        ms[c,"Y"] = (Basems$Y.m.[1] - Basems$Y.m.[2])
       }
-      if(z_corr == TRUE){
-        means[i,] <- c(mean(ms$X), mean(ms$Y), mean(ms$Z), as.character(paste(sort(c(a,b))[1], "&", sort(c(a,b))[2])))
-      }else{
-        means[i,] <- c(mean(ms$X), mean(ms$Y), as.character(paste(sort(c(a,b))[1], "&", sort(c(a,b))[2])))
-      }
+      means[i,] <- c(mean(ms$X), mean(ms$Y), as.character(paste(sort(c(a,b))[1], "&", sort(c(a,b))[2])))
       i = i + 1
     }
   }
   
   k = 1
-  if(z_corr == TRUE){
-    lms$sum[k] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2 + as.numeric(means$Z)^2) # the sum of all mean offsets (squared to remove negatives)
-  }else{
-    lms$sum[k] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2) 
-  }
+  lms$sum[k] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2) 
   lms$iteration[k] = k
   #lms$sum[1]
   k = k + 1
@@ -134,37 +112,17 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
       # calc difference for each tree
       names = unique(Base12C$TreeID)
 
-      if(z_corr == TRUE){
-        msC = data.frame(X = NA, Y = NA, Z = NA)
-      }else{
-        msC = data.frame(X = NA, Y = NA)
-      }
+      msC = data.frame(X = NA, Y = NA)
       for(a in 1:length(names)){
-        if(z_corr == TRUE){
-          BasemsC = Base12C[which(Base12C$TreeID == names[a]),]
-          msC[a,"X"] = (BasemsC$X.m.[1] - BasemsC$X.m.[2])
-          msC[a,"Y"] = (BasemsC$Y.m.[1] - BasemsC$Y.m.[2])
-          msC[a,"Z"] = (BasemsC$ALTITUDE[1] - BasemsC$ALTITUDE[2])
-        }else{
-          BasemsC = Base12C[which(Base12C$TreeID == names[a]),]
-          msC[a,"X"] = (BasemsC$X.m.[1] - BasemsC$X.m.[2])
-          msC[a,"Y"] = (BasemsC$Y.m.[1] - BasemsC$Y.m.[2])
-        } 
+        BasemsC = Base12C[which(Base12C$TreeID == names[a]),]
+        msC[a,"X"] = (BasemsC$X.m.[1] - BasemsC$X.m.[2])
+        msC[a,"Y"] = (BasemsC$Y.m.[1] - BasemsC$Y.m.[2])
       }
       
-      if(z_corr == TRUE){
-        msdataC <- data.frame(X = mean(msC$X), Y = mean(msC$Y), Z = mean(msC$Z)) # calculate mean offset
+      msdataC <- data.frame(X = mean(msC$X), Y = mean(msC$Y)) # calculate mean offset
         
-        data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]+msdataC$X # correct entire dataset
-        data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]+msdataC$Y
-        data$ALTITUDE[which(data$Base == b2C)] = data$ALTITUDE[which(data$Base == b2C)]+msdataC$Z
-      }else{
-        msdataC <- data.frame(X = mean(msC$X), Y = mean(msC$Y)) # calculate mean offset
-        
-        data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]+msdataC$X # correct entire dataset
-        data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]+msdataC$Y
-      } 
-      
+      data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]+msdataC$X # correct entire dataset
+      data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]+msdataC$Y
       
       i = 1
       for(o in 1:length(combos)){
@@ -184,54 +142,28 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
         
         names = unique(Base12$TreeID)
         if(length(names) < ref_num) next
-        if(z_corr == TRUE){
-          ms = data.frame(X = NA, Y = NA, Z = NA)
-        }else{
-          ms = data.frame(X = NA, Y = NA) 
-        }
+        ms = data.frame(X = NA, Y = NA) 
         for(c in 1:length(names)){
-          if(z_corr == TRUE){
-            Basems = Base12[which(Base12$TreeID == names[c]),]
-            ms[c,"X"] = (Basems$X.m.[1] - Basems$X.m.[2])
-            ms[c,"Y"] = (Basems$Y.m.[1] - Basems$Y.m.[2])
-            ms[c,"Z"] = (Basems$ALTITUDE[1] - Basems$ALTITUDE[2])
-          }else{
-            Basems = Base12[which(Base12$TreeID == names[c]),]
-            ms[c,"X"] = (Basems$X.m.[1] - Basems$X.m.[2])
-            ms[c,"Y"] = (Basems$Y.m.[1] - Basems$Y.m.[2])
-          }
+          Basems = Base12[which(Base12$TreeID == names[c]),]
+          ms[c,"X"] = (Basems$X.m.[1] - Basems$X.m.[2])
+          ms[c,"Y"] = (Basems$Y.m.[1] - Basems$Y.m.[2])
         }
         
-        if(z_corr == TRUE){
-          means[i,] <- c(mean(ms$X), mean(ms$Y), mean(ms$Z), combos[o])
-        }else{
-          means[i,] <- c(mean(ms$X), mean(ms$Y), combos[o]) 
-        }
+        means[i,] <- c(mean(ms$X), mean(ms$Y), combos[o]) 
         i = i + 1
       }
       #means
       
-      if(z_corr == TRUE){
-        lms[k,1] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2 + as.numeric(means$Z)^2)
-        lms[k,2] = k
-        lms
-      }else{
-        lms[k,1] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2)
-        lms[k,2] = k
-        lms
-      }
-      
+      lms[k,1] = sum(as.numeric(means$X)^2 + as.numeric(means$Y)^2)
+      lms[k,2] = k
+      #lms
+
       k = k + 1
       if(round(lms[k-2,1],4) <= round(lms[k-1,1],4)){ # compare current ms with the previous iteration, 
         # if the current is similar to the one before or even higher it didn't help
-        if(z_corr == TRUE){
-          data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]-msdataC$X # undo what have been done, since the change did not improve anything
-          data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]-msdataC$Y
-          data$ALTITUDE[which(data$Base == b2C)] = data$ALTITUDE[which(data$Base == b2C)]-msdataC$Z
-        }else{
-          data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]-msdataC$X # undo what have been done, since the change did not improve anything
-          data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]-msdataC$Y 
-        }
+        data$X.m.[which(data$Base == b2C)] = data$X.m.[which(data$Base == b2C)]-msdataC$X # undo what have been done, since the change did not improve anything
+        data$Y.m.[which(data$Base == b2C)] = data$Y.m.[which(data$Base == b2C)]-msdataC$Y 
+        
         k = k - 1
         death = death + 1 # add one to the counter
       }else{death = 1} # every time something was improved the counter is set back to 1
@@ -239,6 +171,136 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
     
     if(death >= limit) break # if the counter hits the limit the repeat loop stops 
   }
+  
+  ################################################################
+  # z_correction to adjust altitude
+  ################################################################
+  if(z_corr == TRUE){
+    overlapsZ <- names(which(table(data$TreeID) > 1))
+    BasesZ <- max(na.omit(data$Base))
+    lmsZ <- data.frame(sum = NA, iteration = NA)
+    
+    # calculate initial mean square
+    ctrlZ = NA
+    iZ = 1
+    meansZ = data.frame(Z = NA, Base_combo = NA)
+    
+    for(a in 1:BasesZ){ # loop 1 of all Bases
+      for(b in 1:BasesZ){ # loop 2 of all Bases
+        if(b == a) next # next iteration if a and b are the same Base
+        ctrlZ = paste(sort(c(a,b))[1], "&", sort(c(a,b))[2]) # control line to avoid doubling base-pairs
+        if(ctrlZ %in% meansZ$Base_combo) next # next iteration if the combination was already calculated
+        
+        adataZ <- data[which(data$TreeID %in% overlaps & data$Base == a),]
+        bdataZ <- data[which(data$TreeID %in% overlaps & data$Base == b),]
+        
+        adataZ <- adataZ[which(adataZ$TreeID %in% bdataZ$TreeID),]
+        bdataZ <- bdataZ[which(bdataZ$TreeID %in% adataZ$TreeID),]
+        
+        if(nrow(adataZ) < 1 | nrow(bdataZ) < 1) next # skip to next loop iteration if there is no row in a or b
+        
+        Base12Z <- rbind(adataZ,bdataZ)
+        
+        namesZ = unique(Base12Z$TreeID)
+        if(length(namesZ) < ref_num) next # skip to next loop iteration if the number of "reference tree" is below the provided amount (should be at least (default) 2)
+        msZ = data.frame(Z = NA)
+        for(c in 1:length(namesZ)){
+          BasemsZ = Base12Z[which(Base12Z$TreeID == namesZ[c]),]
+          msZ[c,"Z"] = (BasemsZ$ALTITUDE[1] - BasemsZ$ALTITUDE[2])
+        }
+        meansZ[iZ,] <- c(mean(msZ$Z), as.character(paste(sort(c(a,b))[1], "&", sort(c(a,b))[2])))
+        iZ = iZ + 1
+      }
+    }
+    
+    kZ = 1
+    lmsZ$sum[kZ] = sum(as.numeric(meansZ$Z)^2) 
+    lmsZ$iteration[kZ] = kZ
+    #lms$sum[1]
+    kZ = kZ + 1
+    
+    combosZ = meansZ$Base_combo # now select possible combos and loop through
+    deathZ = 1
+    repeat{
+      for(l in 1:length(combosZ)){
+        b1CZ = as.numeric(strsplit(combosZ[l], split = " ")[[1]][1])
+        b2CZ = as.numeric(strsplit(combosZ[l], split = " ")[[1]][3])
+        
+        # merging overlapping points of 2 Bases
+        adataCZ <- data[which(data$TreeID %in% overlaps & data$Base == b1CZ),]
+        bdataCZ <- data[which(data$TreeID %in% overlaps & data$Base == b2CZ),]
+        
+        adataCZ <- adataCZ[which(adataCZ$TreeID %in% bdataCZ$TreeID),]
+        bdataCZ <- bdataCZ[which(bdataCZ$TreeID %in% adataCZ$TreeID),]
+        
+        Base12CZ <- rbind(adataCZ,bdataCZ)
+        Base12CZ
+        
+        # calc difference for each tree
+        namesZ = unique(Base12CZ$TreeID)
+        
+        msCZ = data.frame(Z = NA)
+        for(a in 1:length(namesZ)){
+          BasemsCZ = Base12CZ[which(Base12CZ$TreeID == namesZ[a]),]
+          msCZ[a,"Z"] = (BasemsCZ$ALTITUDE[1] - BasemsCZ$ALTITUDE[2])
+        }
+        
+        msdataCZ <- data.frame(Z = mean(msCZ$Z)) # calculate mean offset
+        
+        data$ALTITUDE[which(data$Base == b2CZ)] = data$ALTITUDE[which(data$Base == b2CZ)]+msdataCZ$Z # correct entire dataset
+        
+        iZ = 1
+        for(o in 1:length(combosZ)){
+          b1Z = as.numeric(strsplit(combosZ[o], split = " ")[[1]][1])
+          b2Z = as.numeric(strsplit(combosZ[o], split = " ")[[1]][3])
+          
+          adataZ <- data[which(data$TreeID %in% overlaps & data$Base == b1Z),]
+          bdataZ <- data[which(data$TreeID %in% overlaps & data$Base == b2Z),]
+          
+          adataZ <- adataZ[which(adataZ$TreeID %in% bdataZ$TreeID),]
+          bdataZ <- bdataZ[which(bdataZ$TreeID %in% adataZ$TreeID),]
+          
+          if(nrow(adataZ) < 1 | nrow(bdataZ) < 1) next # skip to next loop iteration if there is no row in a or b
+          
+          Base12Z <- rbind(adataZ,bdataZ)
+          #Base12
+          
+          namesZ = unique(Base12Z$TreeID)
+          if(length(namesZ) < ref_num) next
+          msZ = data.frame(Z = NA) 
+          for(c in 1:length(namesZ)){
+            BasemsZ = Base12Z[which(Base12Z$TreeID == namesZ[c]),]
+            msZ[c,"Z"] = (BasemsZ$ALTITUDE[1] - BasemsZ$ALTITUDE[2])
+          }
+          
+          meansZ[iZ,] <- c(mean(msZ$Z), combosZ[o]) 
+          iZ = iZ + 1
+        }
+        #meansZ
+        
+        lmsZ[kZ,1] = sum(as.numeric(meansZ$Z)^2)
+        lmsZ[kZ,2] = kZ
+        #lmsZ
+        
+        kZ = kZ + 1
+        if(kZ-1 > length(combosZ)+1){ # additional condition: only compare iterations after "correcting" each base combo once
+          if(round(lmsZ[kZ-2,1],4) <= round(lmsZ[kZ-1,1],4)){ # compare current ms with the previous iteration, 
+            # if the current is similar to the one before or even higher it didn't help
+            data$ALTITUDE[which(data$Base == b2CZ)] = data$ALTITUDE[which(data$Base == b2CZ)]-msdataCZ$Z
+            
+            kZ = kZ - 1
+            deathZ = deathZ + 1 # add one to the counter
+          }else{deathZ = 1} # every time something was improved the counter is set back to 1
+        }
+      }  
+      
+      if(deathZ >= limit) break # if the counter hits the limit the repeat loop stops 
+    }
+    
+    # something to avoid distribution to be parallel is needed
+    
+  }
+  
   
   if(plot == TRUE){
     # create "after" plot of adjusted data
@@ -255,6 +317,8 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
   colnames(data)[which(colnames(data) == "TreeID")] <- Tree_ID 
   colnames(data)[which(colnames(data) == "X.m.")] <- X_col
   colnames(data)[which(colnames(data) == "Y.m.")] <- Y_col
+  
+  
   
   if(plot == TRUE){
     return(list(data,  print(gridExtra::grid.arrange(p1, p2, nrow=2)), message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
