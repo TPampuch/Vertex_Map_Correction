@@ -321,8 +321,10 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
   
   
   if(plot == TRUE){
-    return(list(data,  print(gridExtra::grid.arrange(p1, p2, nrow=2)), message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
+    message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))
+    return(list("data" = data,  "map" = (gridExtra::grid.arrange(p1, p2, nrow=2))))
   }else{
-    return(list(data, message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))))
+    message(cat(paste("###################################\nAfter k =",k-1,"steps, no improvement for", limit,"iterations in a row \nLast iteration improved the map to a sum of squares of",lms$sum[k-1],"\n###################################")))
+    return(data)
   }
 }
