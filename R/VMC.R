@@ -17,10 +17,12 @@
 #' @param ref_num minimum number of overlapping trees (default = 2)
 #' @param plot logical, if true plots two maps for comparison (requires ggplot2 and ggrepel)
 #' @param z_corr logical, if true correction of z-column will be included
+#' @param randomize logical, if true randomizes order for selecting base-pairs
+#' @param seed seed for random selection of base-pairs
 #' @return data.frame with corrected X and Y values
 #' @export
 
-VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col = "ALTITUDE", Base_ID = "Base", Tree_ID = "TreeID", limit = 10, ref_num = 2, plot = FALSE, z_corr = FALSE){
+VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col = "ALTITUDE", Base_ID = "Base", Tree_ID = "TreeID", limit = 10, ref_num = 2, plot = FALSE, z_corr = FALSE, randomize = FALSE, seed = 11111){
   
   ####
   # the data should be loaded as a data.frame with the typical Vertex Laser-Geo information
@@ -92,7 +94,14 @@ VMC <- function(data, Tree_DBH = "DBH", X_col = "X.m.", Y_col = "Y.m.", Alt_col 
   #lms$sum[1]
   k = k + 1
   
-  combos = means$Base_combo # now select possible combos and loop through
+  # now select possible (randomized?) combos and loop through
+  if(randomize == TRUE){
+    set.seed(seed)
+    combos = sample(means$Base_combo)
+  }else{
+    combos = means$Base_combo   
+  }
+  
   death = 1
   repeat{
     for(l in 1:length(combos)){
