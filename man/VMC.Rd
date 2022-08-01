@@ -15,7 +15,9 @@ VMC(
   limit = 10,
   ref_num = 2,
   plot = FALSE,
-  z_corr = FALSE
+  z_corr = FALSE,
+  randomize = FALSE,
+  seed = 11111
 )
 }
 \arguments{
@@ -32,6 +34,10 @@ VMC(
 \item{plot}{logical, if true plots two maps for comparison (requires ggplot2 and ggrepel)}
 
 \item{z_corr}{logical, if true correction of z-column will be included}
+
+\item{randomize}{logical, if true randomizes order for selecting base-pairs}
+
+\item{seed}{seed for random selection of base-pairs}
 
 \item{TreeDBH}{name for DBH column (only needed for plotting)}
 
